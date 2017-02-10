@@ -428,6 +428,11 @@
 				}).fail(function(){
 					$("body").unmask();
 					$.gritter.add(msg);
+					//2017-2-10 哈 当请求流失败时应当关闭流推送
+					$.ajax({
+						type : "GET",
+						url : _url + "/stopdevicestream?" + params.join("&")
+					});
 				})
 			})
 		})
