@@ -480,8 +480,22 @@ void CEasyClientDlg::ProcessReqDevListThread()
 				CString strImgURL = (CString)it->second.snapJpgPath_.c_str();
 				if (!strImgURL.IsEmpty())
 				{
+					//判断指定的URL是否可访问
+					HINTERNET hOpen = InternetOpen(NULL, PRE_CONFIG_INTERNET_ACCESS, NULL, NULL, 0);
+					HINTERNET hRequest = InternetOpenUrl(hOpen, strImgURL, NULL, 0, INTERNET_FLAG_TRANSFER_BINARY, 0);
+					if (!hRequest)
+					{
+						return;
+					}
+					if (hOpen)
+					{
+						InternetCloseHandle(hOpen);
+					}
+					if (hRequest)
+					{
+						InternetCloseHandle(hRequest);
+					}
 					pFile = (CHttpFile *)m_pSession->OpenURL(strImgURL, 1, INTERNET_FLAG_TRANSFER_ASCII | INTERNET_FLAG_RELOAD);
-
 					BYTE b;
 					strData.clear();
 					while (pFile->Read(&b, 1))
